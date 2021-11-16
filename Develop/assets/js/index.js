@@ -24,7 +24,9 @@ function createTimeBlocks(hour,am){
                     html(`${hour}${am}`)
     var eventEntry = $("<p>").
                     addClass("col-10 bg-danger evententry").
-                    html("")
+                    html("").
+                    attr("id",hour)
+
     var updateBtn = $("<button>").
                     addClass("col-1")
                     .html("lock")
