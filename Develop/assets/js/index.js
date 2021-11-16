@@ -3,23 +3,30 @@ var timeBlockContainer = $(".container")
 let tasksHashMap = new Map();
 var list = []
 var ot = ""
+var before = "grey"
+var now = "red"
+var after = "green"
+var gethour;
 function createBusinessHours(){
-    for(var t=0;t<9;t++){
-        var hour = t+9;
-        if(hour == 12){
-            createTimeBlocks(12,"PM");
-        }else if(hour >= 13){
-            createTimeBlocks(hour%12,"PM");
-        }else{
-            createTimeBlocks(hour,"AM")
-        }
-        
-
+    for(var t=0;t<9;t++) {
+        var hour = t + 9;
+        createTimeBlocks(hour, "am")
+        // if(hour == 12){
+        //     createTimeBlocks(12,"PM");
+        // }else if(hour >= 13){
+        //     createTimeBlocks(hour,"PM");
+        // }else{
+        //     createTimeBlocks(hour,"AM")
+        // }
+        //
     }
+
 }
 //creates the time blocks one by one
 function createTimeBlocks(hour,am){
-    
+    if(hour >= 12){
+        am = "pm"
+    }
     var slotContainer = $("<div>").
                         addClass("row  slotcontainer")
                         .attr("id",hour)
@@ -27,7 +34,7 @@ function createTimeBlocks(hour,am){
                     addClass("col-1 text-right p-3 timestamp").
                     html(`${hour}${am}`)
     var eventEntry = $("<p>").
-                    addClass("col-10 bg-danger evententry").
+                    addClass("col-10 evententry").
                     html("")
 
     var updateBtn = $("<button>").
@@ -53,9 +60,9 @@ function getLocalStorage(){
     list = JSON.parse(t)
 
     list.forEach(p =>{
-        console.log(p.id,p.entry)
+        //console.log(p.id,p.entry)
         var id = `#${p.id}`
-        console.log($(id).find(".evententry").html(p.entry))
+        $(id).find(".evententry").html(p.entry)
     })
 }
 //on eventEnrty click,changes to textarea to edit
@@ -84,10 +91,20 @@ $(".container").on("blur","textarea", function(){
         $(this).closest("div").find(".savebtn").html("lock")
 
     }
+    var idEntry = parseInt($(this).closest("div").attr("id"))
+    var color = ""
+    if(idEntry === gethour){
+        color = "red"
+    }else if(idEntry < gethour){
+        color = "aqua"
+    }else{
+        color = "green"
+    }
 
     var eventEntry = $("<p>").
-                    addClass("col-10 bg-danger evententry").
-                    html(text)             
+                    addClass("col-10 evententry").
+                    html(text).
+                    css("background-color", color)
     $(this).replaceWith(eventEntry)    
 })
 $(".container").on("click","button",function(){
@@ -113,8 +130,27 @@ $(".container").on("click","button",function(){
 
 
 
+//colorcode slots as to past present and future
+function colorCodingSlots(){
+   gethour = moment().hour(); //return the latest hour
+    // console.log(gethour)
 
+    for(var t = 9;t<=17;t++){
+        var id = `#${t}`
+        console.log(id)
+        if(t < gethour){
+            $(id).find(".evententry").css("background-color",before)
+        }else if(t === gethour){
+            $(id).find(".evententry").css("background-color",now)
 
+        }else{
+            $(id).find(".evententry").css("background-color",after)
+        }
+    }
+}
+//
+// var id = `#${p.id}`
+// $(id).find(".evententry").html(p.entry)
 
 
 
@@ -128,7 +164,7 @@ $(".container").on("click","button",function(){
 createBusinessHours();
 getLocalStorage()
 
-
+colorCodingSlots()
 //get's the current day and date
 $("#currentDay").html(moment().format('dddd, MMMM Do'))
 
