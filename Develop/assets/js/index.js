@@ -1,7 +1,8 @@
 var timeBlockContainer = $(".container")
 //creates hour and call createtimeblocks func to display markup
 let tasksHashMap = new Map();
-var listtasks = []
+var list = []
+var ot = ""
 function createBusinessHours(){
     for(var t=0;t<9;t++){
         var hour = t+9;
@@ -30,25 +31,45 @@ function createTimeBlocks(hour,am){
                     html("")
 
     var updateBtn = $("<button>").
-                    addClass("col-1")
+                    addClass("col-1 savebtn")
                     .html("lock")
     slotContainer.append(timeStamp,eventEntry,updateBtn)
     timeBlockContainer.append(slotContainer)
 }
 //local storage function
 function setLocalStorage(){
-    
-    console.log(listtasks)
-    localStorage.setItem("tasks3",JSON.stringify(listtasks))
+    //listtasks = []//empty the list
+    for (const [key, value] of tasksHashMap.entries()) {
+        var obj = {}
+        obj.id = key
+        obj.entry = value
+        list.push(obj)
+    }
+    localStorage.setItem("tasks3",JSON.stringify(list))
+}
+function getLocalStorage(){
+    var t = localStorage.getItem("tasks3")
+    //var list = []
+    list = JSON.parse(t)
+
+    list.forEach(p =>{
+        console.log(p.id,p.entry)
+        var id = `#${p.id}`
+        console.log($(id).find(".evententry").html(p.entry))
+    })
 }
 //on eventEnrty click,changes to textarea to edit
 $(".container").on("click",".evententry", function(){
     var text = $(this).
                 html().
                 trim()
+    ot = text;
     var textarea = $("<textarea>").
                     addClass("eventinput col-10").
                     val(text)
+    $(this).closest("div").find(".savebtn").css("background-color","green")
+    $(this).closest("div").find(".savebtn").html("Save")
+
     $(this).replaceWith(textarea)
     textarea.trigger("focus")
 })
@@ -58,6 +79,12 @@ $(".container").on("blur","textarea", function(){
     var text = $(this).
                 val().
                 trim()
+    if(ot === text){//no change made in text entry
+        $(this).closest("div").find(".savebtn").css("background-color","lightgrey")
+        $(this).closest("div").find(".savebtn").html("lock")
+
+    }
+
     var eventEntry = $("<p>").
                     addClass("col-10 bg-danger evententry").
                     html(text)             
@@ -69,13 +96,16 @@ $(".container").on("click","button",function(){
     var value = $(this).closest("div").find(".evententry").html()
     
     //send it to local storage!!
-    tasksHashMap.set(key,value)
-    for (const [key, value] of tasksHashMap.entries()) {
-        var obj = {}
-        obj.id = key
-        obj.entry = value
-      }
-    listtasks.push(obj)
+    if(value === ot){
+
+    }else{
+        tasksHashMap.set(key,value)
+        $(this).closest("div").find(".savebtn").css("background-color","lightgrey")
+        $(this).closest("div").find(".savebtn").html("lock")
+
+    }
+
+
     setLocalStorage()
     //console.log(tasksHashMap.entries())
 })
@@ -96,7 +126,7 @@ $(".container").on("click","button",function(){
 
 
 createBusinessHours();
-
+getLocalStorage()
 
 
 //get's the current day and date
