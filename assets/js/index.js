@@ -58,12 +58,16 @@ function getLocalStorage(){
     var t = localStorage.getItem("tasks3")
     //var list = []
     list = JSON.parse(t)
+    if(!list){
 
-    list.forEach(p =>{
-        //console.log(p.id,p.entry)
-        var id = `#${p.id}`
-        $(id).find(".evententry").html(p.entry)
-    })
+    }else{
+        list.forEach(p =>{
+            //console.log(p.id,p.entry)
+            var id = `#${p.id}`
+            $(id).find(".evententry").html(p.entry)
+        })
+    }
+    
 }
 //on eventEnrty click,changes to textarea to edit
 $(".container").on("click",".evententry", function(){
