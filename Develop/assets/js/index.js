@@ -1,4 +1,3 @@
-console.log("working")
 var timeBlockContainer = $(".container")
 function createBusinessHours(){
     for(var t=0;t<9;t++){
@@ -16,16 +15,16 @@ function createBusinessHours(){
 }
 //creates the time blocks one by one
 function createTimeBlocks(hour,am){
-    console.log(`${hour}${am}`)
+    
     var slotContainer = $("<div>").
                         addClass("row  slotcontainer")
+                        .attr("id",hour)
     var timeStamp = $("<p>").
                     addClass("col-1 text-right p-3 timestamp").
                     html(`${hour}${am}`)
     var eventEntry = $("<p>").
                     addClass("col-10 bg-danger evententry").
-                    html("").
-                    attr("id",hour)
+                    html("")
 
     var updateBtn = $("<button>").
                     addClass("col-1")
@@ -34,7 +33,37 @@ function createTimeBlocks(hour,am){
     timeBlockContainer.append(slotContainer)
 }
 
+$(".container").on("click",".evententry", function(){
+    
+    var text = $(this).
+                html().
+                trim()
+    
+    console.log(`the text value is: ${text}`)
+    var textarea = $("<textarea>").
+                    addClass("eventinput col-10").
+                    val(text)
 
+    $(this).replaceWith(textarea)
+    textarea.trigger("focus")
+})
+
+$(".container").on("blur","textarea", function(){
+    
+    var text = $(this).
+                val().
+                trim()
+    
+    
+    var eventEntry = $("<p>").
+                    addClass("col-10 bg-danger evententry").
+                    html(text)             
+
+    $(this).replaceWith(eventEntry)
+
+    console.log(text)
+    
+})
 
 
 

@@ -80,4 +80,14 @@ textarea {
 }
 .evententry {
   border: 1px solid white;
+  width: 100%;
+  font-size: 25px;
+  padding: 15px;
+}
+.evententry:hover {
+  background-color: #77dd77;
+}
+textarea {
+  font-size: 25px;
+  padding: 15px;
 }
