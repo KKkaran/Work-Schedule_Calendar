@@ -46,24 +46,33 @@ function createTimeBlocks(hour,am){
 //local storage function
 function setLocalStorage(){
     //listtasks = []//empty the list
+    console.log(list)
     for (const [key, value] of tasksHashMap.entries()) {
-        var obj = {}
-        obj.id = key
-        obj.entry = value
-        list.push(obj)
+        var obj2 = {}
+        obj2.id = key
+        obj2.entry = value
+        console.log(list)
+        list.push(obj2)
+        console.log(list)
     }
     localStorage.setItem("tasks3",JSON.stringify(list))
 }
 function getLocalStorage(){
     var t = localStorage.getItem("tasks3")
     //var list = []
+    
+    if(!t){
+        console.log("empty")
+        return false;
+    }
     list = JSON.parse(t)
-
     list.forEach(p =>{
         //console.log(p.id,p.entry)
         var id = `#${p.id}`
         $(id).find(".evententry").html(p.entry)
     })
+
+    
 }
 //on eventEnrty click,changes to textarea to edit
 $(".container").on("click",".evententry", function(){
@@ -137,7 +146,7 @@ function colorCodingSlots(){
 
     for(var t = 9;t<=17;t++){
         var id = `#${t}`
-        console.log(id)
+        //console.log(id)
         if(t < gethour){
             $(id).find(".evententry").css("background-color",before)
         }else if(t === gethour){
